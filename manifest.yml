@@ -1,0 +1,5 @@
+---
+applications:
+- name: offers-recommendation-engine
+  memory: 256M
+  instances: 1
