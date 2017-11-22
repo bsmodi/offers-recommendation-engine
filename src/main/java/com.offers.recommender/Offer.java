@@ -9,120 +9,47 @@ import java.util.Date;
 
 public class Offer implements Serializable{
 
-    private Long custId;
+    Long id;
+    String merchantCategory;
+    String offer;
+    Long price;
 
-    private String cardholderLastName;
-
-    private String cardHolderInitial;
-
-    private String description;
-
-    private Double amount;
-
-    private String vendor;
-
-    private Date transactionDate;
-
-    private Long productId;
-
-    private String mcc;
-
-    public Offer(Long custId, String cardholderLastName, String cardHolderInitial, String description, Double amount, String vendor, Date transactionDate, Long productId, String mcc) {
-        this.custId = custId;
-        this.cardholderLastName = cardholderLastName;
-        this.cardHolderInitial = cardHolderInitial;
-        this.description = description;
-        this.amount = amount;
-        this.vendor = vendor;
-        this.transactionDate = transactionDate;
-        this.productId = productId;
-        this.mcc = mcc;
+    public Offer(Long id, String merchantCategory, String offer, Long price) {
+        this.id = id;
+        this.merchantCategory = merchantCategory;
+        this.offer = offer;
+        this.price = price;
     }
 
-    public String getCardholderLastName() {
-        return cardholderLastName;
+    public Long getId() {
+        return id;
     }
 
-    public void setCardholderLastName(String cardholderLastName) {
-        this.cardholderLastName = cardholderLastName;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getCardHolderInitial() {
-        return cardHolderInitial;
+    public String getMerchantCategory() {
+        return merchantCategory;
     }
 
-    public void setCardHolderInitial(String cardHolderInitial) {
-        this.cardHolderInitial = cardHolderInitial;
+    public void setMerchantCategory(String merchantCategory) {
+        this.merchantCategory = merchantCategory;
     }
 
-    public String getDescription() {
-        return description;
+    public String getOffer() {
+        return offer;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setOffer(String offer) {
+        this.offer = offer;
     }
 
-    public Double getAmount() {
-        return amount;
+    public Long getPrice() {
+        return price;
     }
 
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
-
-    public String getVendor() {
-        return vendor;
-    }
-
-    public void setVendor(String vendor) {
-        this.vendor = vendor;
-    }
-
-    public Date getTransactionDate() {
-        return transactionDate;
-    }
-
-    public void setTransactionDate(Date transactionDate) {
-        this.transactionDate = transactionDate;
-    }
-
-    public String getMcc() {
-        return mcc;
-    }
-
-    public void setMcc(String mcc) {
-        this.mcc = mcc;
-    }
-
-    public Long getCustId() {
-        return custId;
-    }
-
-    public void setCustId(Long custId) {
-        this.custId = custId;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
-
-    @Override
-    public String toString() {
-        return "Transaction{" +
-                "custId=" + custId +
-                ", cardholderLastName='" + cardholderLastName + '\'' +
-                ", cardHolderInitial='" + cardHolderInitial + '\'' +
-                ", description='" + description + '\'' +
-                ", amount=" + amount +
-                ", vendor='" + vendor + '\'' +
-                ", transactionDate=" + transactionDate +
-                ", productId=" + productId +
-                ", mcc='" + mcc + '\'' +
-                '}';
+    public void setPrice(Long price) {
+        this.price = price;
     }
 }
