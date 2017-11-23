@@ -9,23 +9,23 @@ import java.util.Date;
 
 public class Offer implements Serializable{
 
-    Long id;
+    int id;
     String merchantCategory;
     String offer;
-    Long price;
+    int price;
 
-    public Offer(Long id, String merchantCategory, String offer, Long price) {
+    public Offer(int id, String merchantCategory, String offer, int price) {
         this.id = id;
         this.merchantCategory = merchantCategory;
         this.offer = offer;
         this.price = price;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -45,11 +45,11 @@ public class Offer implements Serializable{
         this.offer = offer;
     }
 
-    public Long getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(Long price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 }
