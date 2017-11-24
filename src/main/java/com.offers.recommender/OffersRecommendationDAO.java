@@ -1,6 +1,9 @@
 package com.offers.recommender;
 
 import com.mongodb.*;
+import com.mongodb.util.JSON;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.UnknownHostException;
 import java.sql.*;
@@ -26,7 +29,7 @@ public class OffersRecommendationDAO {
         String getOffersSqlStmt = "select * from recommendations where UserID=(?) order by Rating desc";
         PreparedStatement preparedStatement = connection.prepareStatement(getOffersSqlStmt);
         int id = Integer.parseInt(userId);
-        preparedStatement.setInt(1,id);
+        preparedStatement.setInt(1, id);
         ResultSet offersData = preparedStatement.executeQuery();
         int price = 2000;
         while (offersData.next()) {
@@ -36,11 +39,11 @@ public class OffersRecommendationDAO {
         return categories;
     }
 
-    public ArrayList<Offer> getOffers(String userId) throws SQLException, ClassNotFoundException, UnknownHostException {
-        ArrayList<Offer> offers = new ArrayList<>();
-        ArrayList<Category> categories = this.getMCC(userId);
-        ArrayList<String> mccList = new ArrayList<>();
-        for (Category category: categories) {
+    public List<Coupon> getOffers(String userId) throws SQLException, ClassNotFoundException, UnknownHostException {
+        List<Category> categories = this.getMCC(userId);
+        List<String> mccList = new ArrayList<>();
+        List<Coupon> offers = new ArrayList<>();
+        for (Category category : categories) {
             mccList.add(category.getMerchantCategory());
         }
 
@@ -49,18 +52,21 @@ public class OffersRecommendationDAO {
         DB database = mongoClient.getDB("recommendedOffers");
         DBCollection coupons = database.getCollection("coupons");
         BasicDBObject searchQuery = new BasicDBObject();
-        for (String category: mccList) {
-            searchQuery.put("couponId.MCC", category);
-            DBCursor cursor = coupons.find(searchQuery);
-            while (cursor.hasNext()) {
-                Offer offer = (Offer) cursor.next();
-                offers.add(offer);
 
+        for (String category : mccList) {
+            searchQuery.put("couponId.MCC", category);
+            BasicDBObject dbObject = (BasicDBObject) coupons.findOne(searchQuery);
+            if(dbObject!=null) {
+                    Coupon offer = new Coupon();
+                    BasicDBObject couponDetails = (BasicDBObject) dbObject.get("couponId");
+                    offer.setCategory((String) couponDetails.get("MCC"));
+                    offer.setDate((String) couponDetails.get("VALIDITY_DATE"));
+                    offer.setDesc((String) couponDetails.get("DESCRIPTION"));
+                    offer.setTitle((String) couponDetails.get("TITLE"));
+                    offer.setLink((String) couponDetails.get("LINK"));
+                    offers.add(offer);
             }
         }
-
-        /*Offer offer = new Offer("Extra 13% OFF on Minimum purchase of Rs 500/- (Not applicable on electronic products)", "Astonishing offer from ShopClues. Click on Get Code to unlock coupon and visit merchant. Coupon expires on 24 May 2018. Enjoy Rs. 500 on All Categories Except Electronics - Min Purchase 500 listed on the listing page. Use this Coupon and get discount of Rs. 500 from ShopClues. This Coupon is usable to all users. Electronics is not valid for this Coupon.", "http://www.shopclues.com/", "HOLIDAY INNS");
-        offers.add(offer);*/
         return offers;
     }
 }

@@ -3,11 +3,12 @@ package com.offers.recommender;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.jsonschema.JsonSchema;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class OffersRecommendationController {
@@ -21,11 +22,15 @@ public class OffersRecommendationController {
         return offersRecommendationDAO.getMCC(userId);
     }
 
+    @ResponseBody
     @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping("/getOffers")
-    public ArrayList<Offer> getOffers(@RequestParam(value="userId", defaultValue="10001") String userId) throws SQLException, ClassNotFoundException, UnknownHostException {
+    public List<Coupon> getOffers(@RequestParam(value="userId", defaultValue="10001") String userId) throws SQLException, ClassNotFoundException, UnknownHostException {
         offersRecommendationDAO = new OffersRecommendationDAO();
+        ObjectMapper mapper = new ObjectMapper();
         return offersRecommendationDAO.getOffers(userId);
+        //return offersRecommendationDAO.getOffers(userId);
+        //return null;
     }
 
 
