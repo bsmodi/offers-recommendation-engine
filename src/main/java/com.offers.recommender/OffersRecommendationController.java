@@ -33,5 +33,11 @@ public class OffersRecommendationController {
         //return null;
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
+    @RequestMapping("/setProfile")
+    public void setProfile(@RequestBody Profile profile) {
+
+    }
+
 
 }
