@@ -1,5 +1,5 @@
 ---
 applications:
-- name: offers-recommendation-engine
+- name: categories-recommendation-engine
   memory: 256M
   instances: 1

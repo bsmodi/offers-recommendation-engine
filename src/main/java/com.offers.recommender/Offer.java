@@ -1,55 +1,47 @@
 package com.offers.recommender;
-import java.io.Serializable;
-import java.util.Date;
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+public class Offer {
+    String title;
+    String description;
+    String link;
+    String mcc;
 
-public class Offer implements Serializable{
-
-    int id;
-    String merchantCategory;
-    String offer;
-    int price;
-
-    public Offer(int id, String merchantCategory, String offer, int price) {
-        this.id = id;
-        this.merchantCategory = merchantCategory;
-        this.offer = offer;
-        this.price = price;
+    public Offer(String title, String description, String link, String mcc) {
+        this.title = title;
+        this.description = description;
+        this.link = link;
+        this.mcc = mcc;
     }
 
-    public int getId() {
-        return id;
+    public String getTitle() {
+        return title;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getMerchantCategory() {
-        return merchantCategory;
+    public String getDescription() {
+        return description;
     }
 
-    public void setMerchantCategory(String merchantCategory) {
-        this.merchantCategory = merchantCategory;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getOffer() {
-        return offer;
+    public String getLink() {
+        return link;
     }
 
-    public void setOffer(String offer) {
-        this.offer = offer;
+    public void setLink(String link) {
+        this.link = link;
     }
 
-    public int getPrice() {
-        return price;
+    public String getMcc() {
+        return mcc;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
+    public void setMcc(String mcc) {
+        this.mcc = mcc;
     }
 }

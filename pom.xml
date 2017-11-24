@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.springframework</groupId>
-    <artifactId>offers-recommendation-engine</artifactId>
+    <artifactId>categories-recommendation-engine</artifactId>
     <version>0.1.0</version>
     <packaging>war</packaging>
 
@@ -39,6 +39,11 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>3.4.1</version>
         </dependency>
     </dependencies>
     <properties>
