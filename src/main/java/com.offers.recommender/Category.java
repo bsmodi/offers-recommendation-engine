@@ -14,11 +14,9 @@ public class Category implements Serializable{
     String offer;
     int price;
 
-    public Category(int id, String merchantCategory, String offer, int price) {
+    public Category(int id, String merchantCategory) {
         this.id = id;
         this.merchantCategory = merchantCategory;
-        this.offer = offer;
-        this.price = price;
     }
 
     public int getId() {
@@ -35,21 +33,5 @@ public class Category implements Serializable{
 
     public void setMerchantCategory(String merchantCategory) {
         this.merchantCategory = merchantCategory;
-    }
-
-    public String getOffer() {
-        return offer;
-    }
-
-    public void setOffer(String offer) {
-        this.offer = offer;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
     }
 }

@@ -31,10 +31,8 @@ public class OffersRecommendationDAO {
         int id = Integer.parseInt(userId);
         preparedStatement.setInt(1, id);
         ResultSet offersData = preparedStatement.executeQuery();
-        int price = 2000;
         while (offersData.next()) {
-            categories.add(new Category(offersData.getInt("ID"), offersData.getString("MCC"), offersData.getString("MCC"), price));
-            price = price - 100;
+            categories.add(new Category(offersData.getInt("ID"), offersData.getString("MCC")));
         }
         return categories;
     }
