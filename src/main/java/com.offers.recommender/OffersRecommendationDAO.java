@@ -1,70 +1,1 @@
-package com.offers.recommender;
-
-import com.mongodb.*;
-import com.mongodb.util.JSON;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.UnknownHostException;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
-public class OffersRecommendationDAO {
-
-    private static final String url = "jdbc:mysql://offer-recommendation-system.cko6hrw9syfz.us-west-2.rds.amazonaws.com:3306/offers";
-    private static final String user = "user";
-    private static final String password = "12345678";
-    private static final String sqlClassName = "com.mysql.jdbc.Driver";
-
-    public ArrayList<Category> getMCC(String userId) throws SQLException, ClassNotFoundException {
-        ArrayList<Category> categories = new ArrayList<>();
-        Connection connection = null;
-        Class.forName(sqlClassName);
-        Properties properties = new Properties();
-        properties.setProperty("user", user);
-        properties.setProperty("password", password);
-        connection = DriverManager.getConnection(url, properties);
-        String getOffersSqlStmt = "select * from recommendations where UserID=(?) order by Rating desc";
-        PreparedStatement preparedStatement = connection.prepareStatement(getOffersSqlStmt);
-        int id = Integer.parseInt(userId);
-        preparedStatement.setInt(1, id);
-        ResultSet offersData = preparedStatement.executeQuery();
-        while (offersData.next()) {
-            categories.add(new Category(offersData.getInt("ID"), offersData.getString("MCC")));
-        }
-        return categories;
-    }
-
-    public List<Coupon> getOffers(String userId) throws SQLException, ClassNotFoundException, UnknownHostException {
-        List<Category> categories = this.getMCC(userId);
-        List<String> mccList = new ArrayList<>();
-        List<Coupon> offers = new ArrayList<>();
-        for (Category category : categories) {
-            mccList.add(category.getMerchantCategory());
-        }
-
-        MongoClientURI uri = new MongoClientURI("mongodb://Happy123:Happy123@offerrecommendationengine-shard-00-00-utons.mongodb.net:27017,offerrecommendationengine-shard-00-01-utons.mongodb.net:27017,offerrecommendationengine-shard-00-02-utons.mongodb.net:27017/test?ssl=true&replicaSet=OfferRecommendationEngine-shard-0&authSource=admin");
-        MongoClient mongoClient = new MongoClient(uri);
-        DB database = mongoClient.getDB("recommendedOffers");
-        DBCollection coupons = database.getCollection("coupons");
-        BasicDBObject searchQuery = new BasicDBObject();
-
-        for (String category : mccList) {
-            searchQuery.put("couponId.MCC", category);
-            BasicDBObject dbObject = (BasicDBObject) coupons.findOne(searchQuery);
-            if(dbObject!=null) {
-                    Coupon offer = new Coupon();
-                    BasicDBObject couponDetails = (BasicDBObject) dbObject.get("couponId");
-                    offer.setCategory((String) couponDetails.get("MCC"));
-                    offer.setDate((String) couponDetails.get("VALIDITY_DATE"));
-                    offer.setDesc((String) couponDetails.get("DESCRIPTION"));
-                    offer.setTitle((String) couponDetails.get("TITLE"));
-                    offer.setLink((String) couponDetails.get("LINK"));
-                    offers.add(offer);
-            }
-        }
-        return offers;
-    }
-}
+package com.offers.recommender;import com.mongodb.*;import java.net.UnknownHostException;import java.sql.*;import java.util.*;public class OffersRecommendationDAO {    RestClient restClient = new RestClient();    private static Map<String, String> category_mapping = new HashMap<>();    {        category_mapping.put("SOUTHWEST AIRLINES", "Travel");        category_mapping.put("HOLIDAY INNS", "Accomodation");    }    private static final String url = "jdbc:mysql://offer-recommendation-system.cko6hrw9syfz.us-west-2.rds.amazonaws.com:3306/offers";    private static final String user = "user";    private static final String password = "12345678";    private static final String sqlClassName = "com.mysql.jdbc.Driver";    public ArrayList<Category> getMCC(String userId) throws SQLException, ClassNotFoundException {        ArrayList<Category> categories = new ArrayList<>();        Connection connection = null;        Class.forName(sqlClassName);        Properties properties = new Properties();        properties.setProperty("user", user);        properties.setProperty("password", password);        connection = DriverManager.getConnection(url, properties);        String getOffersSqlStmt = "select * from recommendations where UserID=(?) order by Rating desc";        PreparedStatement preparedStatement = connection.prepareStatement(getOffersSqlStmt);        int id = Integer.parseInt(userId);        preparedStatement.setInt(1, id);        ResultSet offersData = preparedStatement.executeQuery();        while (offersData.next()) {            categories.add(new Category(offersData.getInt("ID"), offersData.getString("MCC")));        }        return categories;    }    public List<Coupon> getOffers(String userId) throws SQLException, ClassNotFoundException, UnknownHostException {        List<Category> categories = this.getMCC(userId);        List<String> mccList = new ArrayList<>();        List<Coupon> offers = new ArrayList<>();        for (Category category : categories) {            mccList.add(category.getMerchantCategory());        }        MongoClientURI uri = new MongoClientURI("mongodb://Happy123:Happy123@offerrecommendationengine-shard-00-00-utons.mongodb.net:27017,offerrecommendationengine-shard-00-01-utons.mongodb.net:27017,offerrecommendationengine-shard-00-02-utons.mongodb.net:27017/test?ssl=true&replicaSet=OfferRecommendationEngine-shard-0&authSource=admin");        MongoClient mongoClient = new MongoClient(uri);        DB database = mongoClient.getDB("recommendedOffers");        DBCollection coupons = database.getCollection("coupons");        BasicDBObject searchQuery = new BasicDBObject();        for (String category : mccList) {            Coupon offer = null;            if (category_mapping.containsKey(category)) {                String category_map = category_mapping.get(category);                Profile profile = getUSerDetails(Integer.parseInt(userId));                offer = restClient.predictions(profile, category_map);                if (offer != null) {                    offers.add(offer);                }            }            if(offer == null) {                searchQuery.put("couponId.MCC", category);                BasicDBObject dbObject = (BasicDBObject) coupons.findOne(searchQuery);                if (dbObject != null) {                    offer = new Coupon();                    BasicDBObject couponDetails = (BasicDBObject) dbObject.get("couponId");                    offer.setCategory((String) couponDetails.get("MCC"));                    offer.setDate((String) couponDetails.get("VALIDITY_DATE"));                    offer.setDesc((String) couponDetails.get("DESCRIPTION"));                    offer.setTitle((String) couponDetails.get("TITLE"));                    offer.setLink((String) couponDetails.get("LINK"));                    offers.add(offer);                }            }        }        return offers;    }    public void updateUserDetails(int userId, int age, String city) {        Connection connection = null;        try {            Class.forName(sqlClassName);            Properties properties = new Properties();            properties.setProperty("user", user);            properties.setProperty("password", password);            String getOffersSqlStmt = "insert into userDetails where (userId,age,city) values (?,?,?)";            connection = DriverManager.getConnection(url, properties);            PreparedStatement preparedStatement = connection.prepareStatement(getOffersSqlStmt);            preparedStatement.setInt(1, userId);            preparedStatement.setInt(2, age);            preparedStatement.setString(3, city);            preparedStatement.executeUpdate();        } catch (ClassNotFoundException e) {            e.printStackTrace();        } catch (SQLException e) {            e.printStackTrace();        }    }    public Profile getUSerDetails(int userId) {        Connection connection = null;        try {            Class.forName(sqlClassName);            Properties properties = new Properties();            properties.setProperty("user", user);            properties.setProperty("password", password);            connection = DriverManager.getConnection(url, properties);            String getOffersSqlStmt = "select * from userDetails where userId=(?)";            PreparedStatement preparedStatement = connection.prepareStatement(getOffersSqlStmt);            ;            preparedStatement.setInt(1, userId);            ResultSet userDetails = preparedStatement.executeQuery();            Profile profile = new Profile();            profile.setUserId(String.valueOf(userId));            while (userDetails.next()) {                profile.setAge(String.valueOf(userDetails.getInt("userId")));                profile.setCity(userDetails.getString("city"));            }            return profile;        } catch (ClassNotFoundException e) {            e.printStackTrace();        } catch (SQLException e) {            e.printStackTrace();        }        return null;    }}
