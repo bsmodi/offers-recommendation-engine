@@ -36,6 +36,8 @@ public class OffersRecommendationController {
     @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping("/setProfile")
     public void setProfile(@RequestBody Profile profile) {
+        offersRecommendationDAO.updateUserDetails(Integer.parseInt(profile.getUserId()), Integer.parseInt(profile.getAge()), profile.getCity());
+
 
     }
 

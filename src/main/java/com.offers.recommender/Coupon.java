@@ -11,11 +11,12 @@ import java.util.Properties;
  * Created by anuhyacheruvu on 25/11/17.
  */
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Coupon implements Serializable{
     String title;
-    String desc;
+    String desc = "Here is an amazing deal for yous";
     String category;
-    String date;
+    String date = "";
     String link;
 
     public String getTitle() {
